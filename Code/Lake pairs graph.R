@@ -35,6 +35,55 @@ secchi <- read.csv("Data/NLA2007_secchi.csv") #secchi data
 res.secchi <- subset(secchi, SITE_ID %in% res.names)
 lakes.secchi <- subset(secchi, SITE_ID %in% lakes.names)
 
+# there are multiple records of secchi for some sites
+# so, taking average of multiple readings
+library(plyr)
+library(reshape2)
+res.secmean <- ddply(res.secchi, .(SITE_ID), summarize,
+                     secmean = mean(SECMEAN))
+res.secmean$type <- rep("reservoir")
+lakes.secmean <- ddply(lakes.secchi, .(SITE_ID), summarize,
+                      secmean = mean(SECMEAN))
+lakes.secmean$type <- rep("lakes")
+
+# combine secchi datasets into one long dataframe
+secmean <- rbind(res.secmean, lakes.secmean)
+
+# Combine all info into one dataframe
+sdata <- merge(pairs, secmean, by="SITE_ID")
+
+# Cast data to wide for stats comparisons
+sdata.wide <- dcast(sdata, PAIR_ID ~ type, value.var = "secmean")
+
+# Statistical comparison of secchi depths using Paired T-test
+# First, check for normality
+sdata.wide$x <- sdata.wide$lakes - sdata.wide$reservoir
+boxplot(sdata.wide$x)
+qqnorm(sdata.wide$x)
+qqline(sdata.wide$x)
+# outlier in the data, drop from dataset
+sdata.out <- sdata.wide[(sdata.wide$x < 30), ]
+# Now, check
+boxplot(sdata.out$x)
+qqnorm(sdata.out$x)
+qqline(sdata.out$x)
+shapiro.test(sdata.out$x) # still not normally distributed. Therefore, non-param test
+# Wilcoxon Signed Rank Test
+wilcox.test(sdata.out$lakes, sdata.out$reservoir, paired=TRUE)
+# V = 1225, p-value = 0.00014
+
+# Now, plot! 
+library(ggplot2)
+# first, prep the data
+sdata.long <- melt(sdata.out[,1:3], id.vars="PAIR_ID", variable.name = "type", value.name="secmean")
+sdata.long <- sdata.long[complete.cases(sdata.long),] # I don't know why incomplete cases are generated, but this gets rid of them
+sec.plot <- ggplot(sdata.long, aes(x=type, y=secmean, group=PAIR_ID)) +
+  geom_line(alpha=0.5) +
+  geom_point() +
+  theme_classic(14) +
+  ylab("Secchi Depth (m)") 
+sec.plot +   annotate(geom = "text", label = "p < 0.001", x=2, y=15, size=4)
+
 
 # temperature (more difficult to interpret, tho)
 
