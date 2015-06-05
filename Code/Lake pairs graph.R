@@ -81,7 +81,9 @@ sec.plot <- ggplot(sdata.long, aes(x=type, y=secmean, group=PAIR_ID)) +
   geom_line(alpha=0.5) +
   geom_point() +
   theme_classic(14) +
-  ylab("Secchi Depth (m)") 
+  ylab("Secchi Depth (m)") +
+  scale_x_discrete(breaks = c("lakes", "reservoir"), 
+                   labels = c("natural", "human made"))
 sec.plot +   annotate(geom = "text", label = "p < 0.001", x=2, y=15, size=4)
 
 
