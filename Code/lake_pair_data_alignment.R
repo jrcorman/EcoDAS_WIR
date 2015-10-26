@@ -49,6 +49,9 @@ pair <- function(filename, analyte){
   rl.mean <- rbind(res.mean, lakes.mean)
   # Combine all info into one dataframe
   cdata <- merge(pairs, rl.mean, by="SITE_ID")
+  cdata$ID <- paste(cdata$SITE_ID, cdata$type, sep="_")
+  cdata$analyte <- paste(analyte)
+  return(cdata)
 }
 # Modification for temperature plots, a sets Depth
 pair.temp <- function(filename, analyte, a){
@@ -68,6 +71,9 @@ pair.temp <- function(filename, analyte, a){
   rl.mean <- rbind(res.mean, lakes.mean)
   # Combine all info into one dataframe
   cdata <- merge(pairs, rl.mean, by="SITE_ID")
+  cdata$ID <- paste(cdata$SITE_ID, cdata$type, sep="_")
+  cdata$analyte <- paste(analyte)
+  return(cdata)
 }
 # Function for graphing density distributions
 # Follows from above pair
@@ -91,19 +97,22 @@ p
 
 # Secchi Disk
 sec <- pair("Data/NLA2007_secchi.csv", "SECMEAN")
-dgraph(sec, "Secchi Depth (m)")
+dsec <- dgraph(sec, "Secchi Depth (m)")
+bsec <- boxplot(avg ~ type, data= sec, outline=FALSE, ylab= "Secchi Depth (m)")
 
 # Temp at surface
 temp_1m <- pair.temp("Data/NLA2007_temp.csv", "TEMP_FIELD", 1)
-dgraph(temp_1m, "Temp (oC) Surface")
+dtemp_1m <- dgraph(temp_1m, "Temp (oC) Surface")
+btemp_1m <- boxplot(avg ~ type, data= temp_1m, outline=FALSE, ylab= "Temp (oC)")
+
 
 # Catchment Area
 CA <- pair("Data/NLA2007_basin.csv", "BASINAREA_KM2")
-dgraph(CA, "Catchment Area (km2)")
+dCA <- dgraph(CA, "Catchment Area (km2)")
 
 # Catchment area : lake area
 LA <- pair("Data/NLA2007_lakes.csv", "LAKEAREA") #in km2
-dgraph(LA, "Lake Area (km2)")
+dLA <- dgraph(LA, "Lake Area (km2)")
 names(CA) <- c("Site", "PAIR_ID", "Basin.km2", "type")
 names(LA) <- c("Site", "PAIR_ID", "Lake.km2", "type")
 CA$id <- paste(CA$Site, "_", CA$type)
@@ -111,16 +120,22 @@ LA$id <- paste(LA$Site, "_", LA$type)
 CA_LA <- merge(CA, LA, by = "id")
 CA_LA$avg <- CA_LA$Basin.km2/CA_LA$Lake.km2
 CA_LA$type <- CA_LA$type.y
-dgraph(CA_LA, "CA:LA")
+dCALA <- dgraph(CA_LA, "CA:LA")
 
 # Perimeter 
 peri <- pair("Data/NLA2007_lakes.csv", "LAKEPERIM")
-dgraph(peri, "Perimeter (units)")
+dperi <- dgraph(peri, "Perimeter (units)")
 
 # Elevation
 el <- pair("Data/NLA2007_lakes.csv", "ELEV_PT")
-dgraph(el, "Elevation (units)")
+del <- dgraph(el, "Elevation (units)")
 
 # Max Depth
 depth <- pair("Data/NLA2007_lakes.csv", "DEPTHMAX")
-dgraph(depth, "Depth (units)")
+ddepth <- dgraph(depth, "Depth (units)")
+str(depth)
+boxplot(depth$avg ~ depth$type)
+
+# Merge all datasets
+cdata <- rbind(sec, temp_1m, CA, LA, peri, el, depth)
+
