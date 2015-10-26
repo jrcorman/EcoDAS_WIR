@@ -87,7 +87,7 @@ dgraph <- function(df, xtitle){
                linetype="solid", size=1) +
     geom_vline(data=sdata, aes(xintercept=median,  colour=type),
                linetype="dashed", size=1) +
-    theme_classic(20) +
+    theme_classic(14) +
     scale_y_continuous(expand=c(0,0)) +
     scale_x_continuous(expand=c(0,0)) +
     xlab(xtitle) +
@@ -98,12 +98,10 @@ p
 # Secchi Disk
 sec <- pair("Data/NLA2007_secchi.csv", "SECMEAN")
 dsec <- dgraph(sec, "Secchi Depth (m)")
-bsec <- boxplot(avg ~ type, data= sec, outline=FALSE, ylab= "Secchi Depth (m)")
 
 # Temp at surface
 temp_1m <- pair.temp("Data/NLA2007_temp.csv", "TEMP_FIELD", 1)
 dtemp_1m <- dgraph(temp_1m, "Temp (oC) Surface")
-btemp_1m <- boxplot(avg ~ type, data= temp_1m, outline=FALSE, ylab= "Temp (oC)")
 
 
 # Catchment Area
@@ -135,6 +133,17 @@ depth <- pair("Data/NLA2007_lakes.csv", "DEPTHMAX")
 ddepth <- dgraph(depth, "Depth (units)")
 str(depth)
 boxplot(depth$avg ~ depth$type)
+
+# All density plots as one
+library(gridExtra)
+grid.arrange(dsec, dtemp_1m, dCA, dLA, dCALA, dperi, del, ddepth, ncol=2)
+
+# All boxplots as one
+par(mfrow=c(2,2))
+boxplot(avg ~ type, data= sec, outline=FALSE, ylab= "Secchi Depth (m)")
+boxplot(avg ~ type, data= temp_1m, outline=FALSE, ylab= "Temp (oC)")
+boxplot(avg ~ type, data= peri, outline=FALSE, ylab= "Perimeter (units)")
+boxplot(avg ~ type, data= el, outline=FALSE, ylab= "Elevation (units)")
 
 # Merge all datasets
 cdata <- rbind(sec, temp_1m, CA, LA, peri, el, depth)
