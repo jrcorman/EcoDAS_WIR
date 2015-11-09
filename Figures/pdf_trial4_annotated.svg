@@ -19,7 +19,7 @@
    sodipodi:docname="pdf_trial4_annotated.svg"><metadata
      id="metadata8"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
      id="defs6"><clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath20"><path
@@ -639,7 +639,7 @@
      id="namedview4"
      showgrid="false"
      inkscape:zoom="0.70710678"
-     inkscape:cx="360"
+     inkscape:cx="148.57507"
      inkscape:cy="464.70563"
      inkscape:window-x="1592"
      inkscape:window-y="-8"
@@ -1508,7 +1508,8 @@
        id="g878"><g
          id="g880"
          clip-path="url(#clipPath882)" /></g><g
-       id="g886"><text
+       id="g886"
+       transform="translate(6.4002094,0)"><text
          transform="matrix(1,0,0,-1,396.62,486)"
          style="font-variant:normal;font-weight:normal;font-size:14px;font-family:Helvetica;-inkscape-font-specification:Helvetica;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
          id="text888"><tspan
@@ -1516,7 +1517,7 @@
            y="0"
            sodipodi:role="line"
            id="tspan890">Lake Area (km<tspan
-   style="font-size:52%;baseline-shift:super"
+   style="font-size:51.99999809%;baseline-shift:super"
    id="tspan6342">2</tspan>)</tspan></text>
 </g><g
        id="g892"><g
@@ -1741,15 +1742,6 @@
        id="g1100"><g
          id="g1102"
          clip-path="url(#clipPath1104)" /></g><g
-       id="g1108"><text
-         transform="matrix(1,0,0,-1,123.8,327.6)"
-         style="font-variant:normal;font-weight:normal;font-size:14px;font-family:Helvetica;-inkscape-font-specification:Helvetica;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-         id="text1110"><tspan
-           x="0 8.6379995 16.422001 21.294001 24.402 36.063999 43.848 47.740002 55.523998 60.186001 64.078003 68.739998 80.402"
-           y="0"
-           sodipodi:role="line"
-           id="tspan1112">Perimeter (m)</tspan></text>
-</g><g
        id="g1114"><g
          id="g1116"
          clip-path="url(#clipPath1118)" /></g><g
@@ -2154,7 +2146,8 @@
        id="g1520"><g
          id="g1522"
          clip-path="url(#clipPath1524)" /></g><g
-       id="g1528"><text
+       id="g1528"
+       transform="translate(8.0002937,0)"><text
          transform="matrix(1,0,0,-1,106.15,169.2)"
          style="font-variant:normal;font-weight:normal;font-size:14px;font-family:Helvetica;-inkscape-font-specification:Helvetica;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
          id="text1530"><tspan
@@ -2776,7 +2769,7 @@
        xml:space="preserve"
        id="flowRoot6352"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       transform="matrix(0.8,0,0,-0.8,-255.68981,657.36687)"><flowRegion
+       transform="matrix(0.8,0,0,-0.8,-252.48943,657.36687)"><flowRegion
          id="flowRegion6354"><rect
            id="rect6356"
            width="202.2325"
@@ -2806,7 +2799,7 @@
        xml:space="preserve"
        id="flowRoot6461"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       transform="matrix(0.8,0,0,-0.8,433.31503,488.79261)"><flowRegion
+       transform="matrix(0.8,0,0,-0.8,436.51528,488.79261)"><flowRegion
          id="flowRegion6463"><rect
            id="rect6465"
            width="151.32083"
@@ -2878,4 +2871,16 @@
            x="-1.6301873"
            y="-1920.6472" /></flowRegion><flowPara
          id="flowPara6493-0-5-59"
-         style="font-size:20px">*</flowPara></flowRoot></g></svg>
+         style="font-size:20px">*</flowPara></flowRoot><flowRoot
+       xml:space="preserve"
+       id="flowRoot5265"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.8,0,0,-0.8,387.97985,742.21968)"><flowRegion
+         id="flowRegion5267"><rect
+           id="rect5269"
+           width="120.20815"
+           height="28.284273"
+           x="-333.75439"
+           y="502.09631" /></flowRegion><flowPara
+         id="flowPara5271"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Helvetica;-inkscape-font-specification:Helvetica">Perimeter (km)</flowPara></flowRoot></g></svg>

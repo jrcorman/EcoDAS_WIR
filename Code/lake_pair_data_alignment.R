@@ -185,7 +185,7 @@ dCALA
 peri <- pair("Data/NLA2007_lakes.csv", "LAKEPERIM")
 pr3 <- 0.95
 peri$avg[peri$avg > quantile(peri$avg, prob=pr3, na.rm=TRUE)] <- quantile(peri$avg, prob=pr3, na.rm=TRUE)
-dperi <- dgraph(peri, "Perimeter (m)", "no")
+dperi <- dgraph(peri, "Perimeter (km)", "no")
 dperi
 
 # Elevation
