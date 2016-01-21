@@ -315,6 +315,129 @@ c.plot <- ggplot(cdata.long, aes(x=type, y=CA, group=PAIR_ID)) +
   scale_y_log10()
 cap<-c.plot +   annotate(geom = "text", label = "p < 0.001", x=1.5, y=10000, size=4)
 
+##################################################
+# residence time #
+##################################################
+
+# Part 1. residence time data
+
+resid<-read.csv("~/Desktop/EcoDAS_WIR/Data/NLA2007_residence.csv")
+res.resid<-subset(resid, SITE_ID %in% res.names & E_I>0)
+lakes.resid<-subset(resid, SITE_ID %in% lakes.names & E_I>0)
+
+# there are multiple records of residence time for some sites
+# so, taking average of multiple readings
+library(plyr)
+library(reshape2)
+res.residmean <- ddply(res.resid, .(SITE_ID), summarize,
+                      residmean = mean(RT))
+res.residmean$type <- rep("reservoir")
+lakes.residmean <- ddply(lakes.resid, .(SITE_ID), summarize,
+                        residmean = mean(RT))
+lakes.residmean$type <- rep("lakes")
+
+# combine residence time datasets into one long dataframe
+cresid <- rbind(res.residmean, lakes.residmean)
+
+# Combine all info into one dataframe
+residdata <- merge(pairs, cresid, by="SITE_ID")
+
+# Cast data to wide for stats comparisons
+residdata.wide <- dcast(residdata, PAIR_ID ~ type, value.var = "residmean")
+residdata.wide <- na.omit(residdata.wide)
+
+# Statistical comparison of residence time using Paired tests
+# First, check for normality
+residdata.wide$x <- residdata.wide$lakes - residdata.wide$reservoir
+boxplot(residdata.wide$x)
+qqnorm(residdata.wide$x)
+qqline(residdata.wide$x)
+shapiro.test(residdata.wide$x) 
+# not normally distributed. Therefore, non-param test
+# Wilcoxon Signed Rank Test
+wilcox.test(residdata.wide$lakes, residdata.wide$reservoir, paired=TRUE)
+# V=1618, p= 0.001061
+mean(residdata.wide$lakes)
+#1.2075
+mean(residdata.wide$reservoir)
+#0.5211
+
+# Now, plot! 
+library(ggplot2)
+# first, prep the data
+residdata.long <- melt(residdata.wide[,1:3], id.vars="PAIR_ID", variable.name = "type", value.name="residmean")
+p.plot <- ggplot(residdata.long, aes(x=type, y=residmean, group=PAIR_ID)) +
+  geom_line(alpha=0.5) +
+  geom_point() +
+  theme_classic(14) +
+  ylab("Residence Time (yrs)") +
+  xlab("")+
+  scale_x_discrete(breaks = c("lakes", "reservoir"), 
+                   labels = c("natural", "human made"))+
+  scale_y_log10()
+residencep<-p.plot +   annotate(geom = "text", label = "p < 0.01", x=1.5, y=100, size=4)
+
+##################################################
+# evaporation:inflow #
+##################################################
+
+# Part 1. evap data
+
+evap<-read.csv("~/Desktop/EcoDAS_WIR/Data/NLA2007_residence.csv")
+res.evap<-subset(evap, SITE_ID %in% res.names & E_I>0)
+lakes.evap<-subset(evap, SITE_ID %in% lakes.names & E_I>0)
+
+# there are multiple records of residence time for some sites
+# so, taking average of multiple readings
+library(plyr)
+library(reshape2)
+res.evapmean <- ddply(res.evap, .(SITE_ID), summarize,
+                       evapmean = mean(E_I))
+res.evapmean$type <- rep("reservoir")
+lakes.evapmean <- ddply(lakes.evap, .(SITE_ID), summarize,
+                         evapmean = mean(E_I))
+lakes.evapmean$type <- rep("lakes")
+
+# combine residence time datasets into one long dataframe
+cevap <- rbind(res.evapmean, lakes.evapmean)
+
+# Combine all info into one dataframe
+evapdata <- merge(pairs, cevap, by="SITE_ID")
+
+# Cast data to wide for stats comparisons
+evapdata.wide <- dcast(evapdata, PAIR_ID ~ type, value.var = "evapmean")
+evapdata.wide <- na.omit(evapdata.wide)
+
+# Statistical comparison of E:I using Paired tests
+# First, check for normality
+evapdata.wide$x <- evapdata.wide$lakes - evapdata.wide$reservoir
+boxplot(evapdata.wide$x)
+qqnorm(evapdata.wide$x)
+qqline(evapdata.wide$x)
+shapiro.test(evapdata.wide$x) 
+# not normally distributed. Therefore, non-param test
+# Wilcoxon Signed Rank Test
+wilcox.test(evapdata.wide$lakes, evapdata.wide$reservoir, paired=TRUE)
+# V=1416, p= 0.01203
+mean(evapdata.wide$lakes)
+#0.24
+mean(evapdata.wide$reservoir)
+#0.17
+
+# Now, plot! 
+library(ggplot2)
+# first, prep the data
+evapdata.long <- melt(evapdata.wide[,1:3], id.vars="PAIR_ID", variable.name = "type", value.name="evapmean")
+p.plot <- ggplot(evapdata.long, aes(x=type, y=evapmean, group=PAIR_ID)) +
+  geom_line(alpha=0.5) +
+  geom_point() +
+  theme_classic(14) +
+  ylab("Evaporation : Inflow") +
+  xlab("")+
+  scale_x_discrete(breaks = c("lakes", "reservoir"), 
+                   labels = c("natural", "human made"))+
+  scale_y_log10()
+evapp<-p.plot +   annotate(geom = "text", label = "p = 0.01", x=1.5, y=2, size=4)
 
 ##################################################
 # perimeter #
@@ -326,7 +449,7 @@ perim <- read.csv("~/Desktop/EcoDAS_WIR/Data/NLA2007_lakes.csv") #perimeter data
 res.perim<- subset(perim, SITE_ID %in% res.names)
 lakes.perim <- subset(perim, SITE_ID %in% lakes.names)
 
-# there are multiple records of temp for some sites
+# there are multiple records of perimeter for some sites
 # so, taking average of multiple readings
 library(plyr)
 library(reshape2)
