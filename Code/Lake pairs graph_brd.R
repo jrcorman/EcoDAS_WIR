@@ -31,7 +31,7 @@ colnames(pairs) <- c("PAIR_ID", "SITE_ID")
 # 50 km?
 
 # Part 1. secchi disk depth
-secchi <- read.csv("Data/NLA2007_secchi.csv") #secchi data
+secchi <- read.csv("~/Desktop/EcoDAS_WIR/Data/NLA2007_secchi.csv") #secchi data
 
 res.secchi <- subset(secchi, SITE_ID %in% res.names)
 lakes.secchi <- subset(secchi, SITE_ID %in% lakes.names)
@@ -73,6 +73,16 @@ shapiro.test(sdata.out$x) # still not normally distributed. Therefore, non-param
 wilcox.test(sdata.out$lakes, sdata.out$reservoir, paired=TRUE)
 # V = 1225, p-value = 0.00014
 mean(sdata.out$lakes)
+length(sdata.wide$x)
+
+#install bootstrap package
+library("bootstrap", lib.loc="/Library/Frameworks/R.framework/Versions/3.1/Resources/library")
+secchiboot<-na.omit(sdata.out$lakes)
+bcanon(secchiboot,100000,median)
+bcanon(secchiboot,100000,mean)
+secchiboot<-na.omit(sdata.out$reservoir)
+bcanon(secchiboot,100000,mean)
+bcanon(secchiboot,100000,median)
 
 # Now, plot! 
 library(ggplot2)
@@ -87,7 +97,7 @@ sec.plot <- ggplot(sdata.long, aes(x=type, y=secmean, group=PAIR_ID)) +
   xlab("") +
   scale_x_discrete(breaks = c("lakes", "reservoir"), 
                    labels = c("natural", "human made"))
-secchip<-sec.plot +   annotate(geom = "text", label = "p < 0.001", x=1.5, y=17, size=4)
+secchip<-sec.plot +   annotate(geom = "text", label = "p < 0.001", x=0.7, y=12, size=4)
 
 
 ##################################################
@@ -134,6 +144,12 @@ t.test(tdata.wide$lakes, tdata.wide$reservoir, paired=TRUE)
 # t = -0.72529, df = 54, p-value = 0.4715 (for 1 m depth)
 # t = -0.97688, df = 18, p = 0.3416 (for 5 m depth)
 
+tempboot<-na.omit(tdata.wide$lakes)
+bcanon(tempboot,100000,mean)
+tempboot<-na.omit(tdata.wide$reservoir)
+bcanon(tempboot,100000,mean)
+
+
 # Now, plot! 
 library(ggplot2)
 # first, prep the data
@@ -143,11 +159,11 @@ t.plot <- ggplot(tdata.long, aes(x=type, y=tempmean, group=PAIR_ID)) +
   geom_line(alpha=0.5) +
   geom_point() +
   theme_classic(14) +
-  ylab(expression('Temp at 1m ('^o*'C)')) +
+  ylab(expression(paste('Surface\n Temp ('^o*'C)'))) +
   xlab("")+
   scale_x_discrete(breaks = c("lakes", "reservoir"), 
                    labels = c("natural", "human made"))
-tempp<-t.plot +   annotate(geom = "text", label = "p = 0.47", x=1.5, y=32, size=4)
+tempp<-t.plot +   annotate(geom = "text", label = "p = 0.47", x=0.75, y=25, size=4)
 
 ##################################################
 # temperature (bottom) #
@@ -193,6 +209,12 @@ t.test(tdata.wide$lakes, tdata.wide$reservoir, paired=TRUE)
 # t = -0.72529, df = 54, p-value = 0.4715 (for 1 m depth)
 # t = -0.97688, df = 18, p = 0.3416 (for 5 m depth)
 # t = -3.2044, df=64, p=0.002 (for bottom depth.. minimum temp)
+
+tempboot<-na.omit(tdata.wide$lakes)
+bcanon(tempboot,100000,mean)
+tempboot<-na.omit(tdata.wide$reservoir)
+bcanon(tempboot,100000,mean)
+
 # Now, plot! 
 library(ggplot2)
 # first, prep the data
@@ -206,7 +228,7 @@ t.plot <- ggplot(tbdata.long, aes(x=type, y=tempmean, group=PAIR_ID)) +
   xlab("")+
   scale_x_discrete(breaks = c("lakes", "reservoir"), 
                    labels = c("natural", "human made"))
-tempbp<-t.plot +   annotate(geom = "text", label = "p < 0.01", x=1.5, y=30, size=4)
+tempbp<-t.plot +   annotate(geom = "text", label = "p < 0.01", x=0.75, y=25, size=4)
 ########################################
 # Catchment area : lake area- boxplots #
 ########################################
@@ -243,6 +265,16 @@ shapiro.test(cdata.wide$x)
 # Wilcoxon Signed Rank Test
 wilcox.test(cdata.wide$lake, cdata.wide$reservoir, paired=TRUE)
 # V = 742, p-value = 0.0204
+mean(cdata.wide$lake)
+mean(cdata.wide$reservoir)
+median(cdata.wide$lake)
+median(cdata.wide$reservoir)
+length(cdata.wide$x)
+
+calaboot<-na.omit(cdata.wide$lake)
+bcanon(calaboot,100000,mean)
+calaboot<-na.omit(cdata.wide$reservoir)
+bcanon(calaboot,100000,mean)
 
 # Now, plot! 
 library(ggplot2)
@@ -259,7 +291,7 @@ c.plot <- ggplot(cdata.long, aes(x=type, y=CA_LAratio, group=PAIR_ID)) +
   scale_x_discrete(breaks = c("lake", "reservoir"), 
                    labels = c("natural", "human made")) +
   scale_y_log10()
-calap<-c.plot +   annotate(geom = "text", label = "p < 0.05", x=1.5, y=1800, size=4)
+calap<-c.plot +   annotate(geom = "text", label = "p < 0.05", x=0.7, y=900, size=4)
 
 ########################################
 # Catchment area  #
@@ -298,146 +330,28 @@ shapiro.test(cdata.wide$x)
 wilcox.test(cdata.wide$lake, cdata.wide$reservoir, paired=TRUE)
 # V = 570, p-value = 0.0006
 
+caboot<-na.omit(cdata.wide$lake)
+bcanon(caboot,100000,mean)
+caboot<-na.omit(cdata.wide$reservoir)
+bcanon(caboot,100000,mean)
+
+
 # Now, plot! 
 library(ggplot2)
 # first, prep the data
-cdata.long <- melt(cdata.wide[,1:3], id.vars="PAIR_ID", variable.name = "type", value.name="CA")
-cdata.long <- cdata.long[complete.cases(cdata.long),] # I don't know why incomplete cases are generated, but this gets rid of them
-tapply(X = cdata.long$CA, INDEX = cdata.long$type, FUN = mean)
-c.plot <- ggplot(cdata.long, aes(x=type, y=CA, group=PAIR_ID)) +
+cadata.long <- melt(cdata.wide[,1:3], id.vars="PAIR_ID", variable.name = "type", value.name="CA")
+cadata.long <- cadata.long[complete.cases(cdata.long),] # I don't know why incomplete cases are generated, but this gets rid of them
+tapply(X = cadata.long$CA, INDEX = cadata.long$type, FUN = mean)
+c.plot <- ggplot(cadata.long, aes(x=type, y=CA, group=PAIR_ID)) +
   geom_line(alpha=0.5) +
   geom_point() +
   theme_classic(14) +
-  ylab("Catchment Area") +
+  ylab(expression(paste('Catchment\n Area (km'^2*')'))) +
   xlab("")+
   scale_x_discrete(breaks = c("lake", "reservoir"), 
                    labels = c("natural", "human made")) +
   scale_y_log10()
-cap<-c.plot +   annotate(geom = "text", label = "p < 0.001", x=1.5, y=10000, size=4)
-
-##################################################
-# residence time #
-##################################################
-
-# Part 1. residence time data
-
-resid<-read.csv("~/Desktop/EcoDAS_WIR/Data/NLA2007_residence.csv")
-res.resid<-subset(resid, SITE_ID %in% res.names & E_I>0)
-lakes.resid<-subset(resid, SITE_ID %in% lakes.names & E_I>0)
-
-# there are multiple records of residence time for some sites
-# so, taking average of multiple readings
-library(plyr)
-library(reshape2)
-res.residmean <- ddply(res.resid, .(SITE_ID), summarize,
-                      residmean = mean(RT))
-res.residmean$type <- rep("reservoir")
-lakes.residmean <- ddply(lakes.resid, .(SITE_ID), summarize,
-                        residmean = mean(RT))
-lakes.residmean$type <- rep("lakes")
-
-# combine residence time datasets into one long dataframe
-cresid <- rbind(res.residmean, lakes.residmean)
-
-# Combine all info into one dataframe
-residdata <- merge(pairs, cresid, by="SITE_ID")
-
-# Cast data to wide for stats comparisons
-residdata.wide <- dcast(residdata, PAIR_ID ~ type, value.var = "residmean")
-residdata.wide <- na.omit(residdata.wide)
-
-# Statistical comparison of residence time using Paired tests
-# First, check for normality
-residdata.wide$x <- residdata.wide$lakes - residdata.wide$reservoir
-boxplot(residdata.wide$x)
-qqnorm(residdata.wide$x)
-qqline(residdata.wide$x)
-shapiro.test(residdata.wide$x) 
-# not normally distributed. Therefore, non-param test
-# Wilcoxon Signed Rank Test
-wilcox.test(residdata.wide$lakes, residdata.wide$reservoir, paired=TRUE)
-# V=1618, p= 0.001061
-mean(residdata.wide$lakes)
-#1.2075
-mean(residdata.wide$reservoir)
-#0.5211
-
-# Now, plot! 
-library(ggplot2)
-# first, prep the data
-residdata.long <- melt(residdata.wide[,1:3], id.vars="PAIR_ID", variable.name = "type", value.name="residmean")
-p.plot <- ggplot(residdata.long, aes(x=type, y=residmean, group=PAIR_ID)) +
-  geom_line(alpha=0.5) +
-  geom_point() +
-  theme_classic(14) +
-  ylab("Residence Time (yrs)") +
-  xlab("")+
-  scale_x_discrete(breaks = c("lakes", "reservoir"), 
-                   labels = c("natural", "human made"))+
-  scale_y_log10()
-residencep<-p.plot +   annotate(geom = "text", label = "p < 0.01", x=1.5, y=100, size=4)
-
-##################################################
-# evaporation:inflow #
-##################################################
-
-# Part 1. evap data
-
-evap<-read.csv("~/Desktop/EcoDAS_WIR/Data/NLA2007_residence.csv")
-res.evap<-subset(evap, SITE_ID %in% res.names & E_I>0)
-lakes.evap<-subset(evap, SITE_ID %in% lakes.names & E_I>0)
-
-# there are multiple records of residence time for some sites
-# so, taking average of multiple readings
-library(plyr)
-library(reshape2)
-res.evapmean <- ddply(res.evap, .(SITE_ID), summarize,
-                       evapmean = mean(E_I))
-res.evapmean$type <- rep("reservoir")
-lakes.evapmean <- ddply(lakes.evap, .(SITE_ID), summarize,
-                         evapmean = mean(E_I))
-lakes.evapmean$type <- rep("lakes")
-
-# combine residence time datasets into one long dataframe
-cevap <- rbind(res.evapmean, lakes.evapmean)
-
-# Combine all info into one dataframe
-evapdata <- merge(pairs, cevap, by="SITE_ID")
-
-# Cast data to wide for stats comparisons
-evapdata.wide <- dcast(evapdata, PAIR_ID ~ type, value.var = "evapmean")
-evapdata.wide <- na.omit(evapdata.wide)
-
-# Statistical comparison of E:I using Paired tests
-# First, check for normality
-evapdata.wide$x <- evapdata.wide$lakes - evapdata.wide$reservoir
-boxplot(evapdata.wide$x)
-qqnorm(evapdata.wide$x)
-qqline(evapdata.wide$x)
-shapiro.test(evapdata.wide$x) 
-# not normally distributed. Therefore, non-param test
-# Wilcoxon Signed Rank Test
-wilcox.test(evapdata.wide$lakes, evapdata.wide$reservoir, paired=TRUE)
-# V=1416, p= 0.01203
-mean(evapdata.wide$lakes)
-#0.24
-mean(evapdata.wide$reservoir)
-#0.17
-
-# Now, plot! 
-library(ggplot2)
-# first, prep the data
-evapdata.long <- melt(evapdata.wide[,1:3], id.vars="PAIR_ID", variable.name = "type", value.name="evapmean")
-p.plot <- ggplot(evapdata.long, aes(x=type, y=evapmean, group=PAIR_ID)) +
-  geom_line(alpha=0.5) +
-  geom_point() +
-  theme_classic(14) +
-  ylab("Evaporation : Inflow") +
-  xlab("")+
-  scale_x_discrete(breaks = c("lakes", "reservoir"), 
-                   labels = c("natural", "human made"))+
-  scale_y_log10()
-evapp<-p.plot +   annotate(geom = "text", label = "p = 0.01", x=1.5, y=2, size=4)
+cap<-c.plot +   annotate(geom = "text", label = "p < 0.001", x=0.7, y=10000, size=4)
 
 ##################################################
 # perimeter #
@@ -449,7 +363,7 @@ perim <- read.csv("~/Desktop/EcoDAS_WIR/Data/NLA2007_lakes.csv") #perimeter data
 res.perim<- subset(perim, SITE_ID %in% res.names)
 lakes.perim <- subset(perim, SITE_ID %in% lakes.names)
 
-# there are multiple records of perimeter for some sites
+# there are multiple records of temp for some sites
 # so, taking average of multiple readings
 library(plyr)
 library(reshape2)
@@ -483,6 +397,11 @@ wilcox.test(pdata.wide$lakes, pdata.wide$reservoir, paired=TRUE)
 mean(pdata.wide$lakes)
 mean(pdata.wide$reservoir)
 
+periboot<-na.omit(pdata.wide$lakes)
+bcanon(periboot,100000,mean)
+periboot<-na.omit(pdata.wide$reservoir)
+bcanon(periboot,100000,mean)
+
 # Now, plot! 
 library(ggplot2)
 # first, prep the data
@@ -491,12 +410,12 @@ p.plot <- ggplot(pdata.long, aes(x=type, y=perimean, group=PAIR_ID)) +
   geom_line(alpha=0.5) +
   geom_point() +
   theme_classic(14) +
-  ylab("Perimeter (m)") +
+  ylab("Perimeter (km)") +
   xlab("")+
   scale_x_discrete(breaks = c("lakes", "reservoir"), 
                    labels = c("natural", "human made"))+
   scale_y_log10()
-perimeterp<-p.plot +   annotate(geom = "text", label = "p < 0.01", x=1.5, y=500, size=4)
+perimeterp<-p.plot +   annotate(geom = "text", label = "p < 0.01", x=0.7, y=200, size=4)
 
 ##################################################
 # percent developed #
@@ -554,6 +473,171 @@ p.plot <- ggplot(ddata.long, aes(x=type, y=devmean, group=PAIR_ID)) +
 developedp<-p.plot +   annotate(geom = "text", label = "p =0.27", x=2.15, y=15, size=4)
 
 ##################################################
+# percent agriculture #
+##################################################
+
+# Part 1. percent developed
+agri <- read.csv("~/Desktop/EcoDAS_WIR/Data/NLA2007_basin.csv") #land use data
+
+res.agri<- subset(agri, SITE_ID %in% res.names)
+lakes.agri <- subset(agri, SITE_ID %in% lakes.names)
+
+# there are multiple records of temp for some sites
+# so, taking average of multiple readings
+library(plyr)
+library(reshape2)
+res.agrimean <- ddply(res.agri, .(SITE_ID), summarize,
+                     agrimean = mean(PCT_AGRIC_BSN))
+res.agrimean$type <- rep("reservoir")
+lakes.agrimean <- ddply(lakes.agri, .(SITE_ID), summarize,
+                       agrimean = mean(PCT_AGRIC_BSN))
+lakes.agrimean$type <- rep("lakes")
+
+# combine land use datasets into one long dataframe
+agridata <- rbind(res.agrimean, lakes.agrimean)
+
+# Combine all info into one dataframe
+ddata <- merge(pairs, agridata, by="SITE_ID")
+
+# Cast data to wide for stats comparisons
+agdata.wide <- dcast(ddata, PAIR_ID ~ type, value.var = "agrimean")
+
+# Statistical comparison of secchi depths using Paired T-test
+# First, check for normality
+agdata.wide$x <- agdata.wide$lakes - agdata.wide$reservoir
+boxplot(agdata.wide$x)
+qqnorm(agdata.wide$x)
+qqline(agdata.wide$x)
+shapiro.test(agdata.wide$x) 
+# not normally distributed. Therefore, non-param test
+# Wilcoxon Signed Rank Test
+wilcox.test(agdata.wide$lakes, agdata.wide$reservoir, paired=TRUE)
+# V=649.5, p= 0.16
+
+# Now, plot! 
+library(ggplot2)
+# first, prep the data
+agdata.long <- melt(agdata.wide[,1:3], id.vars="PAIR_ID", variable.name = "type", value.name="agrimean")
+p.plot <- ggplot(agdata.long, aes(x=type, y=agrimean, group=PAIR_ID)) +
+  geom_line(alpha=0.5) +
+  geom_point() +
+  theme_classic(14) +
+  ylab("% Agricultural") +
+  scale_x_discrete(breaks = c("lakes", "reservoir"), 
+                   labels = c("natural", "human made"))
+agrip<-p.plot +   annotate(geom = "text", label = "p =0.16", x=2.15, y=15, size=4)
+
+##################################################
+# percent forest #
+##################################################
+
+# Part 1. percent forest
+forest <- read.csv("~/Desktop/EcoDAS_WIR/Data/NLA2007_basin.csv") #land use data
+
+res.for<- subset(forest, SITE_ID %in% res.names)
+lakes.for <- subset(forest, SITE_ID %in% lakes.names)
+
+# there are multiple records of temp for some sites
+# so, taking average of multiple readings
+library(plyr)
+library(reshape2)
+res.formean <- ddply(res.for, .(SITE_ID), summarize,
+                      formean = mean(PCT_FOREST_BSN))
+res.formean$type <- rep("reservoir")
+lakes.formean <- ddply(lakes.for, .(SITE_ID), summarize,
+                        formean = mean(PCT_FOREST_BSN))
+lakes.formean$type <- rep("lakes")
+
+# combine land use datasets into one long dataframe
+fordata <- rbind(res.formean, lakes.formean)
+
+# Combine all info into one dataframe
+ddata <- merge(pairs, fordata, by="SITE_ID")
+
+# Cast data to wide for stats comparisons
+fordata.wide <- dcast(ddata, PAIR_ID ~ type, value.var = "formean")
+
+# Statistical comparison of secchi depths using Paired T-test
+# First, check for normality
+fordata.wide$x <- fordata.wide$lakes - fordata.wide$reservoir
+boxplot(fordata.wide$x)
+qqnorm(fordata.wide$x)
+qqline(fordata.wide$x)
+shapiro.test(fordata.wide$x) 
+# not normally distributed. Therefore, non-param test
+# Wilcoxon Signed Rank Test
+wilcox.test(fordata.wide$lakes, fordata.wide$reservoir, paired=TRUE)
+# V=732.5, p= 0.09
+
+# Now, plot! 
+library(ggplot2)
+# first, prep the data
+fordata.long <- melt(fordata.wide[,1:3], id.vars="PAIR_ID", variable.name = "type", value.name="formean")
+pf.plot <- ggplot(fordata.long, aes(x=type, y=formean, group=PAIR_ID)) +
+  geom_line(alpha=0.5) +
+  geom_point() +
+  theme_classic(14) +
+  ylab("% Forest") +
+  scale_x_discrete(breaks = c("lakes", "reservoir"), 
+                   labels = c("natural", "human made"))
+forp<-pf.plot +   annotate(geom = "text", label = "p =0.09", x=2.15, y=15, size=4)
+
+##################################################
+# percent agriculture+developed #
+##################################################
+
+# Part 1. percent ag + developed
+agrid <- read.csv("~/Desktop/EcoDAS_WIR/Data/NLA2007_basin.csv") #land use data
+
+res.agrid<- subset(agrid, SITE_ID %in% res.names)
+lakes.agrid <- subset(agrid, SITE_ID %in% lakes.names)
+
+# there are multiple records of temp for some sites
+# so, taking average of multiple readings
+library(plyr)
+library(reshape2)
+res.agridmean <- ddply(res.agrid, .(SITE_ID), summarize,
+                     agridmean = mean(PCT_DEVELOPED_BSN+PCT_AGRIC_BSN))
+res.agridmean$type <- rep("reservoir")
+lakes.agridmean <- ddply(lakes.agrid, .(SITE_ID), summarize,
+                       agridmean = mean(PCT_DEVELOPED_BSN+PCT_AGRIC_BSN))
+lakes.agridmean$type <- rep("lakes")
+
+# combine land use datasets into one long dataframe
+agriddata <- rbind(res.agridmean, lakes.agridmean)
+
+# Combine all info into one dataframe
+ddata <- merge(pairs, agriddata, by="SITE_ID")
+
+# Cast data to wide for stats comparisons
+agriddata.wide <- dcast(ddata, PAIR_ID ~ type, value.var = "agridmean")
+
+# Statistical comparison of secchi depths using Paired T-test
+# First, check for normality
+agriddata.wide$x <- agriddata.wide$lakes - agriddata.wide$reservoir
+boxplot(agriddata.wide$x)
+qqnorm(agriddata.wide$x)
+qqline(agriddata.wide$x)
+shapiro.test(agriddata.wide$x) 
+# not normally distributed. Therefore, non-param test
+# Wilcoxon Signed Rank Test
+wilcox.test(agriddata.wide$lakes, agriddata.wide$reservoir, paired=TRUE)
+# V=927.5, p= 0.9
+
+# Now, plot! 
+library(ggplot2)
+# first, prep the data
+agriddata.long <- melt(agriddata.wide[,1:3], id.vars="PAIR_ID", variable.name = "type", value.name="agridmean")
+pad.plot <- ggplot(agriddata.long, aes(x=type, y=agridmean, group=PAIR_ID)) +
+  geom_line(alpha=0.5) +
+  geom_point() +
+  theme_classic(14) +
+  ylab("% Ag + Developed") +
+  scale_x_discrete(breaks = c("lakes", "reservoir"), 
+                   labels = c("natural", "human made"))
+agridp<-pad.plot +   annotate(geom = "text", label = "p =0.9", x=2.15, y=15, size=4)
+
+##################################################
 # elevation #
 ##################################################
 
@@ -595,6 +679,11 @@ shapiro.test(edata.wide$x)
 wilcox.test(edata.wide$lakes, edata.wide$reservoir, paired=TRUE)
 # V=593, p= 0.03
 
+elevboot<-na.omit(edata.wide$lakes)
+bcanon(elevboot,100000,mean)
+elevboot<-na.omit(edata.wide$reservoir)
+bcanon(elevboot,100000,mean)
+
 # Now, plot! 
 library(ggplot2)
 # first, prep the data
@@ -607,7 +696,7 @@ e.plot <- ggplot(edata.long, aes(x=type, y=elevmean, group=PAIR_ID)) +
   xlab("")+
   scale_x_discrete(breaks = c("lakes", "reservoir"), 
                    labels = c("natural", "human made"))
-elevationp<-e.plot +   annotate(geom = "text", label = "p < 0.05", x=1.5, y=3600, size=4)
+elevationp<-e.plot +   annotate(geom = "text", label = "p < 0.05", x=0.7, y=3000, size=4)
 
 ##################################################
 # area #
@@ -655,6 +744,11 @@ mean(adata.wide$lakes)
 mean(adata.wide$reservoir)
 #5.196161... but median is 0.711
 
+areaboot<-na.omit(adata.wide$lakes)
+bcanon(areaboot,100000,mean)
+areaboot<-na.omit(adata.wide$reservoir)
+bcanon(areaboot,100000,mean)
+
 # Now, plot! 
 library(ggplot2)
 # first, prep the data
@@ -663,12 +757,12 @@ a.plot <- ggplot(adata.long, aes(x=type, y=areamean, group=PAIR_ID)) +
   geom_line(alpha=0.5) +
   geom_point() +
   theme_classic(14) +
-  ylab("Area") +
+  ylab(expression(paste('Area (km'^2*')'))) +
   xlab("")+
   scale_x_discrete(breaks = c("lakes", "reservoir"), 
                    labels = c("natural", "human made"))+
 scale_y_log10()
-areap<-a.plot +   annotate(geom = "text", label = "p < 0.05", x=1.5, y=140, size=4)
+areap<-a.plot +   annotate(geom = "text", label = "p < 0.05", x=0.75, y=140, size=4)
 
 
 ##################################################
@@ -717,6 +811,11 @@ mean(dedata.wide$lakes)
 mean(dedata.wide$reservoir)
 #8.7
 
+depboot<-na.omit(dedata.wide$lakes)
+bcanon(depboot,100000,mean)
+depboot<-na.omit(dedata.wide$reservoir)
+bcanon(depboot,100000,mean)
+
 # Now, plot! 
 library(ggplot2)
 # first, prep the data
@@ -729,23 +828,102 @@ de.plot <- ggplot(dedata.long, aes(x=type, y=depmean, group=PAIR_ID)) +
   xlab("")+
   scale_x_discrete(breaks = c("lakes", "reservoir"), 
                    labels = c("natural", "human made"))
-depthp<-de.plot +   annotate(geom = "text", label = "p = 0.35", x=1.5, y=50, size=4)
+depthp<-de.plot +   annotate(geom = "text", label = "p = 0.35", x=0.75, y=50, size=4)
+
+##################################################
+# area/depth #
+##################################################
+
+# Part 1. area/depth
+volume <- read.csv("~/Desktop/EcoDAS_WIR/Data/NLA2007_lakes.csv") #area and depth data
+
+res.volume<- subset(volume, SITE_ID %in% res.names)
+lakes.volume <- subset(volume, SITE_ID %in% lakes.names)
+
+# there are multiple records for some sites
+# so, taking average of multiple readings
+library(plyr)
+library(reshape2)
+res.volmean <- ddply(res.volume, .(SITE_ID), summarize,
+                      vol =  (mean(LAKEAREA)/mean(DEPTH_X)))
+res.volmean$type <- rep("reservoir")
+lakes.volmean <- ddply(lakes.volume, .(SITE_ID), summarize,
+                        vol = (mean(LAKEAREA)/mean(DEPTH_X)))
+lakes.volmean$type <- rep("lakes")
+
+# combine elevation datasets into one long dataframe
+volum <- rbind(res.volmean, lakes.volmean)
+
+# Combine all info into one dataframe
+vdata <- merge(pairs, volum, by="SITE_ID")
+
+# Cast data to wide for stats comparisons
+vdata.wide <- dcast(vdata, PAIR_ID ~ type, value.var = "vol")
+
+# Statistical comparison of secchi depths using Paired T-test
+# First, check for normality
+vdata.wide$x <- vdata.wide$lakes - vdata.wide$reservoir
+boxplot(vdata.wide$x)
+qqnorm(vdata.wide$x)
+qqline(vdata.wide$x)
+shapiro.test(vdata.wide$x) 
+# not normally distributed. Therefore, non-param test
+# Wilcoxon Signed Rank Test
+wilcox.test(vdata.wide$lakes, vdata.wide$reservoir, paired=TRUE)
+# V=776, p= 0.053
+vdata.wide<-na.omit(vdata.wide)
+mean(vdata.wide$lakes)
+mean(vdata.wide$reservoir)
+
+
+# Now, plot! 
+library(ggplot2)
+# first, prep the data
+vdata.long <- melt(vdata.wide[,1:3], id.vars="PAIR_ID", variable.name = "type", value.name="vol")
+v.plot <- ggplot(vdata.long, aes(x=type, y=vol, group=PAIR_ID)) +
+  geom_line(alpha=0.5) +
+  geom_point() +
+  theme_classic(14) +
+  ylab("Area/Mean Depth") +
+  xlab("")+
+  scale_x_discrete(breaks = c("lakes", "reservoir"), 
+                   labels = c("natural", "human made"))+
+  scale_y_log10()
+volp<-v.plot +   annotate(geom = "text", label = "p = 0.05", x=1.5, y=140, size=4)
 
 ##################################################
 # Depth Normalized Temperature Gradient #
 ##################################################
 
 head(tdata)
-head(dedata)
 head(tdatab)
-gradient<-merge(tdata,dedata,by.x="SITE_ID",by.y="SITE_ID")
+
+#now extract max depth from temp profile data
+res.depth.bot <- ddply(res.temp, .(SITE_ID), summarize,
+                       depmax = max(DEPTH))
+res.depth.bot$type <- rep("reservoir")
+lakes.depth.bot <- ddply(lakes.temp, .(SITE_ID), summarize,
+                         depmax = max(DEPTH))
+lakes.depth.bot$type <- rep("lakes")
+
+# combine temp datasets into one long dataframe
+mdepth <- rbind(res.depth.bot, lakes.depth.bot)
+
+# Combine all info into one dataframe
+mddata <- merge(pairs, mdepth, by="SITE_ID")
+
+head(mddata)
+
+#now merge the depth and temperature datasets
+gradient<-merge(tdata,mddata,by.x="SITE_ID",by.y="SITE_ID")
 gradient2<-merge(gradient,tdatab,by.x="SITE_ID",by.y="SITE_ID")
 #tempmean.x is surface temp
 #tempmean.y is bottom temp
 
+
 # Combine all info into one dataframe
 gradient2$surbot<-(gradient2$tempmean.x-gradient2$tempmean.y)
-gradient2$tgrad <- (gradient2$surbot/gradient2$depmean)# degrees C per m depth
+gradient2$tgrad <- (gradient2$surbot/gradient2$depmax)# degrees C per m depth
 
 # Cast data to wide for stats comparisons
 gradient.wide <- dcast(gradient2, PAIR_ID ~ type, value.var = "tgrad")
@@ -761,11 +939,16 @@ shapiro.test(gradient.wide$x)
 # normally distributed
 # t-test
 t.test(gradient.wide$lakes, gradient.wide$reservoir, paired=TRUE)
-# t=1.6471, p= 0.1055, df=53
+# t=1.6071, p= 0.114, df=53
 mean(gradient.wide$lakes)
-#0.77
+#0.84
 mean(gradient.wide$reservoir)
-#0.57
+#0.62
+
+gradboot<-na.omit(gradient.wide$lakes)
+bcanon(gradboot,100000,mean)
+gradboot<-na.omit(gradient.wide$reservoir)
+bcanon(gradboot,100000,mean)
 
 # Now, plot! 
 library(ggplot2)
@@ -775,11 +958,11 @@ tede.plot <- ggplot(gradient.long, aes(x=type, y=tempdep, group=PAIR_ID)) +
   geom_line(alpha=0.5) +
   geom_point() +
   theme_classic(14) +
-  ylab(expression('Temp Gradient ('^o*'C/m)'))
-  xlab("")+
+  ylab(expression(paste('      Temp \n Change ('^o*'C/m)')))+
+  xlab("") +
   scale_x_discrete(breaks = c("lakes", "reservoir"), 
                    labels = c("natural", "human made"))
-tedep<-tede.plot +   annotate(geom = "text", label = "p = 0.11", x=1.5, y=3, size=4)
+tedep<-tede.plot + annotate(geom = "text", label = "p = 0.11", x=0.75, y=2.5, size=4)
 
 ########################################################
 ##      Code for making a multi-panel plot            ##
@@ -821,11 +1004,13 @@ multiplot<- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 
-multiplot(areap,elevationp,depthp,tempp,tedep,cap,perimeterp,secchip,tempbp,calap,cols=2)
-
+#multiplot(areap,elevationp,depthp,tempp,tedep,cap,perimeterp,secchip,tempbp,calap,cols=2)
+multiplot(elevationp,cap,perimeterp,secchip,tempbp,calap,areap,depthp,tempp,tedep,cols=2)
 ##############################################################
 # generate a table of statistics for the data                #
 ##############################################################
+
+library("dplyr", lib.loc="/Library/Frameworks/R.framework/Versions/3.1/Resources/library")
 
 #first create a series of dataframes with matching column labels
 A<-mutate(dedata.long,variable="depth")
@@ -868,6 +1053,41 @@ H<-mutate(H,value=tempmean)
 H<-select(H,type,variable,value)
 head(H)
 
+I<-mutate(cadata.long,variable="CA")
+I<-mutate(I,value=CA)
+I<-select(I,type,variable,value)
+head(I)
+
+J<-mutate(vdata.long,variable="vol")
+J<-mutate(J,value=vol)
+J<-select(J,type,variable,value)
+head(J)
+
+K<-mutate(gradient.long,variable="tempdep")
+K<-mutate(K,value=tempdep)
+K<-select(K,type,variable,value)
+head(K)
+
+a<-mutate(agriddata.long,variable="agridmean")
+a<-mutate(a,value=agridmean)
+a<-select(a,type,variable,value)
+head(a)
+
+b<-mutate(fordata.long,variable="formean")
+b<-mutate(b,value=formean)
+b<-select(b,type,variable,value)
+head(b)
+
+c<-mutate(agdata.long,variable="agrimean")
+c<-mutate(c,value=agrimean)
+c<-select(c,type,variable,value)
+head(c)
+
+d<-mutate(ddata.long,variable="devmean")
+d<-mutate(d,value=devmean)
+d<-select(d,type,variable,value)
+head(d)
+
 #now combine the data sets into one large dataframe
 Z<-bind_rows(A,B)
 Y<-bind_rows(Z,C)
@@ -876,18 +1096,32 @@ W<-bind_rows(X,E)
 V<-bind_rows(W,I)
 U<-bind_rows(V,G)
 S<-bind_rows(U,H)
+T<-bind_rows(S,I)
+R<-bind_rows(T,J)
+Q<-bind_rows(R,K)
+head(Q)
 
-head(S)
+z<-bind_rows(a,b)
+y<-bind_rows(z,c)
+x<-bind_rows(y,d)
 
 #now generate summary table
 library(plyr)
-table<-ddply(S, .(type,variable),summarize,
+table<-ddply(Q, .(type,variable),summarize,
              avg=mean(value,na.rm=TRUE),
              std=sd(value,na.rm=TRUE),
              med=median(value,na.rm=TRUE)
              )
 table
 write.table(table,"~/Desktop/EcoDAS_WIR/Figures/Summary_Table.csv",sep="\t")
+
+table2<-ddply(x, .(type,variable),summarize,
+              avg=mean(value,na.rm=TRUE),
+              std=sd(value,na.rm=TRUE),
+              med=median(value,na.rm=TRUE)
+)
+table2
+write.table(table2,"~/Desktop/EcoDAS_WIR/Figures/Summary_Table_Land_Use.csv",sep="\t")
 ##############################################################
 # scatter plot of secchi disk by catchment area : lake area  #
 # with distintion between man-made and natural lake          #

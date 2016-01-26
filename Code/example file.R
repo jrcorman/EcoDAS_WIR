@@ -12,6 +12,7 @@ temp5 <- subset(temp, DEPTH == 5)
 secchi <- read.csv("Data/NLA2007_secchi.csv") #secchi data
 
 # Merge all data; there is probably a cleaner way to do this
+# Add all=true and it will keep everything :)
 # Going to use the dplyr package since it is what I am familiar with, but we should chat about what type of "merge" is appropriate
 #cdata <- merge(lake, chem, by="SITE_ID")
 #ddata <- merge(cdata, temp5, by="SITE_ID")
