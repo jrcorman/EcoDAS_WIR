@@ -1,5 +1,8 @@
-# Lake-res pair vs remaining lakes/reservoirs
-# stats analysis
+##########################################
+# Are lakes and reservoirs in lake-pairs #
+# representative of the NLA Dataset?     #
+# Code by jrc, started 160127            #
+##########################################
 
 source("LakePairWhole.R")
 
