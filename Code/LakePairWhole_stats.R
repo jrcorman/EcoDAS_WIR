@@ -4,7 +4,7 @@
 # Code by jrc, started 160127            #
 ##########################################
 
-source("LakePairWhole.R")
+source("Code/LakePairWhole.R")
 
 # Graphing pair versus remaining
 dgraph.piece <- function(df, xtitle, legend){
@@ -28,33 +28,23 @@ dgraph.piece <- function(df, xtitle, legend){
   a
 }
 
+# Report results of t-test
+library(plyr)
 
-# Start with secchi disk comparison
-
-sec.all$piece <- paste("remaining")
-sec$piece <- paste("pair")
-sec <- sec[,!(names(sec) %in% "PAIR_ID")]
-
-sec.res <- rbind(sec.all[which(sec.all$type=="reservoir"),], sec[which(sec$type=="reservoir"),])
-sec.lakes <- rbind(sec.all[which(sec.all$type=="lakes"),], sec[which(sec$type=="lakes"),])
-
-cdata<-rbind(sec, sec.all)
-
-t.test(sec.res$avg_all~sec.res$piece)
-boxplot(sec.res$avg_all~sec.res$piece)
-dgraph.piece(sec.res, "Secchi Depth (m)", "yes")
-
-# Create graph with boxplot and density plots
-# and report results of t-test
 pair_whole <- function(data_pair, data_rem){
   data_pair$piece <- paste("pair")
   data_pair <- data_pair[,!(names(data_pair) %in% "PAIR_ID")]
   data_rem$piece <- paste("remaining")
-  cdata <- rbind(data_pair, data_rem)
-  stats <- function(x){
-    print(t.test(x$avg ~ x$piece))
-  }
-  print(tapply(cdata, cdata$type, stats))
-}
+  adata <- rbind(data_pair, data_rem)
+  cdata <- na.omit(adata)
+  cdata$id <- paste(cdata$type, cdata$piece, sep="_")
+  d_ply(cdata, .(type), function(x)
+    print(t.test(x$avg ~ x$piece, var.equal=FALSE)))
+  count(cdata$id)
+    }
 
 pair_whole(sec, sec.all)
+pair_whole(CA_all, CA_all.all)
+pair_whole(peri, peri.all)
+pair_whole(el, el.all)
+pair_whole(depth, depth.all)
