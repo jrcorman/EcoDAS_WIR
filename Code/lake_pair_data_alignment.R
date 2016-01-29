@@ -89,7 +89,7 @@ dgraph <- function(df, xtitle, legend){
                linetype="solid", size=1) +
     geom_vline(data=sdata, aes(xintercept=median,  colour=type),
                linetype="dashed", size=1) +
-    theme_classic(14) +
+    theme_classic(12) +
     scale_fill_manual(values=c("#222222", "white")) +
     scale_color_manual(values=c("#222222", "#999999")) +
     scale_y_continuous(expand=c(0,0)) +
@@ -168,8 +168,8 @@ dLA <- dgraph(LAs, "Lake Area (km2)", "no")
 
 # Catchment area : lake area
 CA <- pair("Data/NLA2007_basin.csv", "BASINAREA_KM2")
-names(CA) <- c("Site", "PAIR_ID", "Basin.km2", "type")
-names(LA) <- c("Site", "PAIR_ID", "Lake.km2", "type")
+names(CA) <- c("Site", "PAIR_ID", "Basin.km2", "type", "ID", "analyte", "avg_all")
+names(LA) <- c("Site", "PAIR_ID", "Lake.km2", "type", "ID", "analyte", "avg_all")
 CA$id <- paste(CA$Site, "_", CA$type)
 LA$id <- paste(LA$Site, "_", LA$type)
 CA_LA <- merge(CA, LA, by = "id")
@@ -196,13 +196,34 @@ del
 # Max Depth
 depth <- pair("Data/NLA2007_lakes.csv", "DEPTHMAX")
 ddepth <- dgraph(depth, "Max Depth (m)", "no")
-str(depth)
 boxplot(depth$avg ~ depth$type)
 
-# All density plots as one
+# Residence time
+ei <- pair("Data/NLA2007_residence.csv", "E_I")
+dei <- dgraph(ei, "E:I", "no")
+
+rt <- pair("Data/NLA2007_residence.csv", "RT")
+pr4 <- 0.98
+rt$avg[rt$avg > quantile(rt$avg, prob=pr3, na.rm=TRUE)] <- quantile(rt$avg, prob=pr4, na.rm=TRUE)
+drt <- dgraph(rt, "Residence Time", "no")
+drt
+
+############################
+# All density plots as one #
+############################
 library(gridExtra)
 grid.arrange(del, dCALA, dCA, dLA, dperi, 
              ddepth, dsec, dtemp_1m, dtemp_bottom, dtemp_change, ncol=2)
+
+# Density plots as two figures
+library(gridExtra)
+jpeg('Figures/Fig2A_densityplots_catchment.jpg', quality=100, width=7, height=3.5, units="in", res=600)
+grid.arrange(del, dCALA, dCA, dLA, dperi, ddepth, ncol=3)
+dev.off()
+jpeg('Figures/Fig2B_densityplots_waterbody.jpg', quality=100, width=7, height=3.5, units="in", res=600)
+grid.arrange(dsec, drt, dei, dtemp_1m, dtemp_bottom, dtemp_change, ncol=3)
+dev.off()
+
 
 # All boxplots as one
 par(mfrow=c(2,2))
