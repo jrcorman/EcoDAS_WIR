@@ -22,6 +22,21 @@ data_CA <- data_prep(CA_all, CA_all.all)
 data_peri <- data_prep(peri, peri.all)
 data_el <- data_prep(el, el.all)
 data_depth <- data_prep(depth, depth.all)
+data_rt <- data_prep(rt, rt.all)
+data_ei <- data_prep(ei, ei.all)
+data_LA <- data_prep(LA, LA.all)
+data_tempbot <- data_prep(tdatab, tdatab.all)
+data_strat <- data_prep(strat, strat.all)
+data_tempsfc <- data_prep(temp_1m, temp_1m.all)
+
+# Catchment area to lake area calculation
+CA_LA1 <- CA_LA[, names(CA_LA) %in% c("id", "avg", "type")]
+CA_LA.all1 <- CA_LA.all[, names(CA_LA.all) %in% c("ID", "avg", "type")]
+names(CA_LA1) <- c("ID", "avg", "type")
+data_CALA <- data_prep(CA_LA1, CA_LA.all1)
+
+# Temperature info
+
 
 # Report results of t-test
 library(plyr)
@@ -36,6 +51,13 @@ pair_whole(data_CA) #sig, both
 pair_whole(data_peri) #sig, both
 pair_whole(data_el) #sig, lakes
 pair_whole(data_depth)
+pair_whole(data_rt) #sig, lakes
+pair_whole(data_ei) # sig, both
+pair_whole(data_CALA) #sig, res
+pair_whole(data_LA) #sig, res
+pair_whole(data_tempbot)
+pair_whole(data_strat)
+pair_whole(data_tempsfc) #sig, res
 
 # Making graphs when results are significant
 # Graphing pair versus remaining
@@ -70,3 +92,19 @@ data_peri$avg[data_peri$avg > quantile(data_peri$avg, prob=pr, na.rm=TRUE)] <- q
 dgraph.piece(data_peri, "Perimeter", "yes")
 
 dgraph.piece(data_el, "Elevation", "yes")
+
+pr <- 0.99
+data_rt$avg[data_rt$avg > quantile(data_rt$avg, prob=pr, na.rm=TRUE)] <- quantile(data_rt$avg, prob=pr, na.rm=TRUE)
+dgraph.piece(data_rt, "Residence time", "yes")
+
+dgraph.piece(data_ei, "E:I", "yes")
+
+pr <- 0.90
+data_CALA$avg[data_CALA$avg > quantile(data_CALA$avg, prob=pr, na.rm=TRUE)] <- quantile(data_CALA$avg, prob=pr, na.rm=TRUE)
+dgraph.piece(data_CALA, "CA:LA", "yes")
+
+pr <- 0.90
+data_LA$avg[data_LA$avg > quantile(data_LA$avg, prob=pr, na.rm=TRUE)] <- quantile(data_LA$avg, prob=pr, na.rm=TRUE)
+dgraph.piece(data_LA, "Lake Area", "yes")
+
+dgraph.piece(data_tempsfc, "Surface Temp", "yes")
