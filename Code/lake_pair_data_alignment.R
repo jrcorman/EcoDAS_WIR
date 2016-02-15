@@ -217,11 +217,11 @@ grid.arrange(del, dCALA, dCA, dLA, dperi,
 
 # Density plots as two figures
 library(gridExtra)
-jpeg('Figures/Fig2A_densityplots_catchment.jpg', quality=100, width=7, height=3.5, units="in", res=600)
-grid.arrange(del, dCALA, dCA, dLA, dperi, ddepth, ncol=3)
+pdf('Figures/Fig2A_densityplots_catchment.pdf', width=7, height=5)
+grid.arrange(del, dCALA, dCA, dLA, dperi, ddepth, drt, ncol=3)
 dev.off()
-jpeg('Figures/Fig2B_densityplots_waterbody.jpg', quality=100, width=7, height=3.5, units="in", res=600)
-grid.arrange(dsec, drt, dei, dtemp_1m, dtemp_bottom, dtemp_change, ncol=3)
+pdf('Figures/Fig2B_densityplots_waterbody.pdf', width=4.5, height=3.5)
+grid.arrange(dsec, dtemp_1m, dtemp_bottom, dtemp_change, ncol=2)
 dev.off()
 
 
